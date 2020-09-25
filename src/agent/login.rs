@@ -1,6 +1,10 @@
 use anyhow::Result;
 use yew::agent::*;
 use yew::services::Task;
+use yew_router::{
+    agent::{RouteAgentDispatcher, RouteRequest},
+    route::Route,
+};
 
 use std::collections::HashSet;
 
@@ -54,6 +58,8 @@ impl Agent for LoginAgent {
                 for id in self.subscriber.clone() {
                     self.link.respond(id, self.to_responce());
                 }
+                let mut routing = RouteAgentDispatcher::<()>::new();
+                routing.send(RouteRequest::ChangeRoute(Route::new_no_state("/dashboard")));
             }
         }
     }
