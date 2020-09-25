@@ -3,7 +3,7 @@ use yew_router::{prelude::*, route::Route, switch::Permissive, Switch};
 
 use crate::agent::config::{self, ConfigAgent};
 use crate::components::navbar::Navbar;
-use crate::page::{home::Home, login::Login};
+use crate::page::{Dashboard, Home, Login};
 
 pub struct App {
     loading: bool,
@@ -14,6 +14,8 @@ pub struct App {
 pub enum AppRouter {
     #[to = "/login"]
     Login,
+    #[to = "/dashboard"]
+    Dashboard,
     #[to = "/"]
     Home,
     #[to = "/page-not-found"]
@@ -63,6 +65,7 @@ impl Component for App {
                                 match switch {
                                     AppRouter::Login => html!{<Login/>},
                                     AppRouter::Home => html!{<Home/>},
+                                    AppRouter::Dashboard => html!{<Dashboard/>},
                                     AppRouter::PageNotFound(Permissive(None)) => html!{"Page not found"},
                                     AppRouter::PageNotFound(Permissive(Some(missing_route))) => html!{format!("Page '{}' not found", missing_route)},
                                 }
