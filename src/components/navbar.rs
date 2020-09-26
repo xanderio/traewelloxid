@@ -55,7 +55,9 @@ impl Component for Navbar {
                                 if self.logged_in {
                                     html! {
                                         <li class="nav-item">
-                                            <a class="nav-link" >{"Dashboard"}</a>
+                                            <RouterAnchor<AppRouter> route=AppRouter::Dashboard, classes="nav-link">
+                                                {"Dashboard"}
+                                            </RouterAnchor<AppRouter>>
                                         </li>
                                     }
                                 } else {
