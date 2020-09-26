@@ -1,6 +1,6 @@
 use anyhow::Result;
 use yew::agent::*;
-use yew::services::Task;
+use yew::services::{storage::*, Task};
 use yew_router::{
     agent::{RouteAgentDispatcher, RouteRequest},
     route::Route,
@@ -10,10 +10,13 @@ use std::collections::HashSet;
 
 use crate::service::login::LoginService;
 
+const STORAGE_KEY: &'static str = "token";
+
 pub struct LoginAgent {
     link: AgentLink<Self>,
     bearer: Option<String>,
     subscriber: HashSet<HandlerId>,
+    storage: StorageService,
     _task: Option<Box<dyn Task>>,
 }
 
@@ -43,10 +46,13 @@ impl Agent for LoginAgent {
     type Output = Responce;
 
     fn create(link: AgentLink<Self>) -> Self {
+        let storage = StorageService::new(Area::Local).expect("failed to open local storage");
+        let bearer = storage.restore::<Result<String>>(STORAGE_KEY).ok();
         Self {
             link,
-            bearer: None,
+            bearer,
             subscriber: HashSet::new(),
+            storage,
             _task: None,
         }
     }
@@ -54,6 +60,7 @@ impl Agent for LoginAgent {
     fn update(&mut self, msg: Self::Message) {
         match msg {
             Msg::GotBearer(bearer) => {
+                self.storage.store(STORAGE_KEY, Ok(bearer.clone()));
                 self.bearer = Some(bearer);
                 for id in self.subscriber.clone() {
                     self.link.respond(id, self.to_responce());
