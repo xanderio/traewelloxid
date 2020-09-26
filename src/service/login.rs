@@ -1,4 +1,4 @@
-use crate::service::{config::ConfigService, ApiError};
+use crate::{service::config::ConfigService, types::ApiError};
 
 use anyhow::{anyhow, Result};
 use serde_derive::*;

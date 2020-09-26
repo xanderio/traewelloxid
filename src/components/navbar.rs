@@ -5,7 +5,6 @@ use crate::agent::login::{self, LoginAgent};
 use crate::app::AppRouter;
 
 pub struct Navbar {
-    link: ComponentLink<Self>,
     logged_in: bool,
     _login_agent: Box<dyn Bridge<LoginAgent>>,
 }
@@ -23,7 +22,6 @@ impl Component for Navbar {
         let callback = link.callback(|responce| Msg::Login(responce));
         let login_agent = LoginAgent::bridge(callback);
         Self {
-            link,
             logged_in: false,
             _login_agent: login_agent,
         }

@@ -8,7 +8,7 @@ use yew::{
 
 use std::sync::RwLock;
 
-use crate::Config;
+use crate::types::Config;
 
 lazy_static! {
     static ref CONFIG: RwLock<Option<Config>> = RwLock::default();

@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use yew::{agent::*, services::fetch::*};
 
 use crate::service::config::ConfigService;
-use crate::Config;
+use crate::types::Config;
 
 pub struct ConfigAgent {
     link: AgentLink<Self>,
