@@ -13,7 +13,7 @@ pub struct ConfigAgent {
 pub enum Msg {
     Fetch(Config),
 }
-
+#[derive(Debug)]
 pub enum Response {
     Changed,
 }
@@ -42,7 +42,7 @@ impl Agent for ConfigAgent {
 
                 ConfigService::put(config);
 
-                for id in self.subscribers.iter() {
+                for id in &self.subscribers {
                     log::trace!("Sending config change to {:?}", id);
                     self.link.respond(*id, Response::Changed);
                 }

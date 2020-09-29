@@ -16,16 +16,17 @@ pub enum ApiError {
     NotAcceptable406,
 }
 
+#[derive(Deserialize, Debug, Clone)]
 pub struct StatusPaginate {
     current_page: u64,
     data: Vec<Status>,
     first_page_url: String,
-    from_page_url: String,
+    from_page_url: Option<String>,
     from: u64,
     next_page_url: String,
     path: String,
     per_page: u64,
-    prev_page_url: String,
+    prev_page_url: Option<String>,
     to: u64,
 }
 
@@ -34,11 +35,12 @@ pub struct Status {
     id: u64,
     created_at: String,
     updated_at: String,
-    body: String,
+    body: Option<String>,
     #[serde(rename = "type")]
     status_type: String,
-    link_count: String,
-    liked: bool,
+    event_id: Option<String>,
+    likes_count: u64,
+    favorited: bool,
     user: User,
     train_checkin: TrainCheckin,
     event: Option<Event>,
@@ -60,12 +62,13 @@ pub struct TrainCheckin {
     status_id: u64,
     trip_id: String,
     origin: Station,
-    destintion: Station,
+    destination: Station,
     distance: u64,
     departure: String,
     arrival: String,
     points: u64,
-    delay: u64,
+    delay: Option<u64>,
+    hafas_trip: HafasTrip,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -73,8 +76,8 @@ pub struct Station {
     id: u64,
     ibnr: String,
     name: String,
-    latiude: f32,
-    longitude: f32,
+    latitude: String,
+    longitude: String,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -87,10 +90,10 @@ pub struct HafasTrip {
     origin: String,
     destination: String,
     stopovers: String,
-    polyline: String,
+    polyline: Option<String>,
     departure: String,
     arrival: String,
-    delay: u64,
+    delay: Option<u64>,
 }
 
 #[derive(Deserialize, Debug, Clone)]

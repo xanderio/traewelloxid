@@ -1,13 +1,36 @@
 use crate::{service::config::ConfigService, types::ApiError};
 
 use anyhow::{anyhow, Result};
+use lazy_static::lazy_static;
 use serde_derive::*;
 use serde_json::json;
 use yew::{format::Json, prelude::*, services::fetch::*};
 
+use std::sync::RwLock;
+
 pub struct LoginService;
 
+lazy_static! {
+    static ref BEARER: RwLock<Option<String>> = RwLock::default();
+}
+
 impl LoginService {
+    pub fn get() -> String {
+        let bearer = BEARER.read().expect("lock poisoned");
+
+        bearer.clone().expect("bearer none")
+    }
+
+    pub fn get_format() -> String {
+        format!("Bearer {}", LoginService::get())
+    }
+
+    pub fn put(bearer: String) {
+        let mut bearer_lock = BEARER.write().expect("lock poisoned");
+
+        *bearer_lock = Some(bearer);
+    }
+
     pub fn login(email: String, password: String, callback: Callback<Result<String>>) -> FetchTask {
         let config = ConfigService::get();
         let url = format!("{}/api/v0/auth/login", config.base_url);

@@ -22,10 +22,7 @@ impl ConfigService {
     pub fn get<'a>() -> Config {
         let config = CONFIG.read().expect("lock poisoned");
 
-        if let None = *config {
-            panic!("config none");
-        }
-        config.clone().unwrap()
+        config.clone().expect("config none")
     }
 
     /// Replace the global application configuration.

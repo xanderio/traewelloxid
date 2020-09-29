@@ -27,7 +27,11 @@ pub enum Request {
 
 #[derive(Debug)]
 pub enum Responce {
+    ///Send as a broadcast to all subscriber. Contains the bearer token as a string
+    ///Will also be send a client on connect, if this is the current login state
     LoggedIn(String),
+    ///Send as a broadcast to all subscriber.
+    ///Will also be send a client on connect, if this is the current login state
     LoggedOut,
 }
 
@@ -48,6 +52,10 @@ impl Agent for LoginAgent {
     fn create(link: AgentLink<Self>) -> Self {
         let storage = StorageService::new(Area::Local).expect("failed to open local storage");
         let bearer = storage.restore::<Result<String>>(STORAGE_KEY).ok();
+        if let Some(bearer) = bearer.clone() {
+            LoginService::put(bearer);
+        }
+
         Self {
             link,
             bearer,
@@ -60,11 +68,15 @@ impl Agent for LoginAgent {
     fn update(&mut self, msg: Self::Message) {
         match msg {
             Msg::GotBearer(bearer) => {
+                LoginService::put(bearer.clone());
+
                 self.storage.store(STORAGE_KEY, Ok(bearer.clone()));
                 self.bearer = Some(bearer);
+
                 for id in self.subscriber.clone() {
                     self.link.respond(id, self.to_responce());
                 }
+
                 let mut routing = RouteAgentDispatcher::<()>::new();
                 routing.send(RouteRequest::ChangeRoute(Route::new_no_state("/dashboard")));
             }
@@ -94,6 +106,11 @@ impl Agent for LoginAgent {
 }
 
 impl LoginAgent {
+    pub fn has_storad_token() -> bool {
+        let storage = StorageService::new(Area::Local).expect("failed to open local storage");
+        storage.restore::<Result<String>>(STORAGE_KEY).is_ok()
+    }
+
     fn to_responce(&self) -> Responce {
         match self.bearer.clone() {
             Some(bearer) => Responce::LoggedIn(bearer),
