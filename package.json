@@ -1,0 +1,16 @@
+{
+  "name": "traewelloxid",
+  "private": true,
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xanderio/traewelloxid.git"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.0",
+    "awesomplete": "^1.1.5",
+    "bootstrap-cookie-alert": "^1.2.1",
+    "leaflet": "^1.7.1",
+    "mdbootstrap": "^4.19.1"
+  }
+}
